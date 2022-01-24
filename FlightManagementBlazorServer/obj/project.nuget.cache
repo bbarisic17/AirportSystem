@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "Y3mZsdnukOb9Deb+Ws1H7B89Yqi95XUMcNSy/fI2ghRffJ7wcwWLO5CnBGU5ke86V6IDbVFr1OBowutxDubbJg==",
+  "dgSpecHash": "MBoM5CN3JY/SWkHVecjsmUY8nudD1TvfPHctQpS+VVM1kITQz+XDZPiP2F5bF5gnxLxYdbJDwS6xChPTqpowyQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Bojan\\Desktop\\AirportSystem_Lecture5_Start\\FlightManagementBlazorServer\\FlightManagementBlazorServer.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "C:\\Users\\Bojan\\Desktop\\Temp\\AirportSystem_Lecture9_Start\\FlightManagementBlazorServer\\FlightManagementBlazorServer.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Bojan\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\5.0.13\\microsoft.netcore.app.host.win-x64.5.0.13.nupkg.sha512"
+  ],
   "logs": []
 }

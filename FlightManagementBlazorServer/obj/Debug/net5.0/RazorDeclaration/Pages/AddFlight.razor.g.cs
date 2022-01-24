@@ -13,85 +13,99 @@ namespace FlightManagementBlazorServer.Pages
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Components;
 #nullable restore
-#line 1 "C:\Users\Bojan\Desktop\AirportSystem_Lecture5_Start\FlightManagementBlazorServer\_Imports.razor"
+#line 1 "C:\Users\Bojan\Desktop\AirportSystem_Lecture9_Start\FlightManagementBlazorServer\_Imports.razor"
 using System.Net.Http;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 2 "C:\Users\Bojan\Desktop\AirportSystem_Lecture5_Start\FlightManagementBlazorServer\_Imports.razor"
+#line 2 "C:\Users\Bojan\Desktop\AirportSystem_Lecture9_Start\FlightManagementBlazorServer\_Imports.razor"
 using Microsoft.AspNetCore.Authorization;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 3 "C:\Users\Bojan\Desktop\AirportSystem_Lecture5_Start\FlightManagementBlazorServer\_Imports.razor"
+#line 3 "C:\Users\Bojan\Desktop\AirportSystem_Lecture9_Start\FlightManagementBlazorServer\_Imports.razor"
 using Microsoft.AspNetCore.Components.Authorization;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 4 "C:\Users\Bojan\Desktop\AirportSystem_Lecture5_Start\FlightManagementBlazorServer\_Imports.razor"
+#line 4 "C:\Users\Bojan\Desktop\AirportSystem_Lecture9_Start\FlightManagementBlazorServer\_Imports.razor"
 using Microsoft.AspNetCore.Components.Forms;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 5 "C:\Users\Bojan\Desktop\AirportSystem_Lecture5_Start\FlightManagementBlazorServer\_Imports.razor"
+#line 5 "C:\Users\Bojan\Desktop\AirportSystem_Lecture9_Start\FlightManagementBlazorServer\_Imports.razor"
 using Microsoft.AspNetCore.Components.Routing;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 6 "C:\Users\Bojan\Desktop\AirportSystem_Lecture5_Start\FlightManagementBlazorServer\_Imports.razor"
+#line 6 "C:\Users\Bojan\Desktop\AirportSystem_Lecture9_Start\FlightManagementBlazorServer\_Imports.razor"
 using Microsoft.AspNetCore.Components.Web;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 7 "C:\Users\Bojan\Desktop\AirportSystem_Lecture5_Start\FlightManagementBlazorServer\_Imports.razor"
+#line 7 "C:\Users\Bojan\Desktop\AirportSystem_Lecture9_Start\FlightManagementBlazorServer\_Imports.razor"
 using Microsoft.AspNetCore.Components.Web.Virtualization;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 8 "C:\Users\Bojan\Desktop\AirportSystem_Lecture5_Start\FlightManagementBlazorServer\_Imports.razor"
+#line 8 "C:\Users\Bojan\Desktop\AirportSystem_Lecture9_Start\FlightManagementBlazorServer\_Imports.razor"
 using Microsoft.JSInterop;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 9 "C:\Users\Bojan\Desktop\AirportSystem_Lecture5_Start\FlightManagementBlazorServer\_Imports.razor"
+#line 9 "C:\Users\Bojan\Desktop\AirportSystem_Lecture9_Start\FlightManagementBlazorServer\_Imports.razor"
 using FlightManagementBlazorServer;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 10 "C:\Users\Bojan\Desktop\AirportSystem_Lecture5_Start\FlightManagementBlazorServer\_Imports.razor"
+#line 10 "C:\Users\Bojan\Desktop\AirportSystem_Lecture9_Start\FlightManagementBlazorServer\_Imports.razor"
 using FlightManagementBlazorServer.Shared;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 11 "C:\Users\Bojan\Desktop\AirportSystem_Lecture5_Start\FlightManagementBlazorServer\_Imports.razor"
+#line 11 "C:\Users\Bojan\Desktop\AirportSystem_Lecture9_Start\FlightManagementBlazorServer\_Imports.razor"
 using DomainModel.Models;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 12 "C:\Users\Bojan\Desktop\AirportSystem_Lecture5_Start\FlightManagementBlazorServer\_Imports.razor"
+#line 12 "C:\Users\Bojan\Desktop\AirportSystem_Lecture9_Start\FlightManagementBlazorServer\_Imports.razor"
 using Services;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 13 "C:\Users\Bojan\Desktop\AirportSystem_Lecture9_Start\FlightManagementBlazorServer\_Imports.razor"
+using ValidationModels;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 2 "C:\Users\Bojan\Desktop\AirportSystem_Lecture9_Start\FlightManagementBlazorServer\Pages\AddFlight.razor"
+using System.Text;
 
 #line default
 #line hidden
@@ -105,9 +119,12 @@ using Services;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 18 "C:\Users\Bojan\Desktop\AirportSystem_Lecture5_Start\FlightManagementBlazorServer\Pages\AddFlight.razor"
+#line 21 "C:\Users\Bojan\Desktop\AirportSystem_Lecture9_Start\FlightManagementBlazorServer\Pages\AddFlight.razor"
        
     public Flight Flight { get; set; }
+    public NotificationDialog NotificationDialog{ get; set; }
+    public List<ValidationError> ValidationErrors{ get; set; }
+    public String ConcatenatedValidationErrors{ get; set; }
     protected override async Task OnInitializedAsync()
     {
         Flight = new Flight();
@@ -116,13 +133,55 @@ using Services;
 
     private async Task AddFlightAsync()
     {
-        await _flightService.AddFlightAsync(Flight);
-        Close();
+        ValidationErrors = ValidateFlight();
+        if(ValidationErrors.Any())
+        {
+            ConcatenatedValidationErrors = GetConcatenatedValidationErrors(ValidationErrors);
+            NotificationDialog.Show();
+        }
+        else
+        {
+            await _flightService.AddFlightAsync(Flight);
+            Close();
+        }
     }
 
     private void Close()
     {
         _navigationManager.NavigateTo("/");
+    }
+
+    private List<ValidationError> ValidateFlight()
+    {
+        var validationErrors = new List<ValidationError>();
+        if (String.IsNullOrWhiteSpace(Flight.Number))
+            validationErrors.Add(new ValidationError { Description = "Please insert flight number!" });
+
+        if (String.IsNullOrWhiteSpace(Flight.AirportTo))
+            validationErrors.Add(new ValidationError { Description = "Please insert Airport To!" });
+
+        if (Flight.CarrierId == null)
+            validationErrors.Add(new ValidationError { Description = "Please select Carrier!" });
+
+        if (String.IsNullOrWhiteSpace(Flight.FlightTime))
+            validationErrors.Add(new ValidationError { Description = "Please insert Flight Time!" });
+
+        return validationErrors;
+
+    }
+
+    private string GetConcatenatedValidationErrors(List<ValidationError> ValidationErrors)
+    {
+        StringBuilder message = new StringBuilder();
+        foreach(var error in ValidationErrors)
+        {
+            if (message.Length == 0)
+                message.Append(error.Description);
+            else
+                message.Append($"{Environment.NewLine} {error.Description}");
+
+        }
+        return message.ToString();
     }
 
 #line default
